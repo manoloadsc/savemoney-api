@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="/public/styles/email.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <img class="logo" src="https://api.economize-ai.com/static/images/logo.png" alt="<%= siteName %>" />
+      <h1>
+        <%= title %>
+      </h1>
+    </div>
+
+    <div class="content">
+      <h2>Olá, <%= username %>!</h2>
+      <p style="font-size: 16px">
+        Recebemos uma solicitação para redefinir sua senha de acesso à
+        plataforma <b><%= siteName %></b>.
+      </p>
+      <p style="font-size: 16px">
+        Para continuar, clique no botão abaixo e siga as instruções:
+      </p>
+
+      <a target="_blank" href="<%= resetUrl %>" class="button">
+        Redefinir Senha
+      </a>
+
+      <p style="font-size: 16px">
+        Caso não tenha solicitado essa alteração, ignore este e-mail. Sua conta
+        permanecerá segura.
+      </p>
+      <p style="font-size: 16px">
+        Se precisar de ajuda, nosso suporte está disponível por e-mail ou
+        WhatsApp:
+      </p>
+      <p style="font-size: 16px">
+        E-mail:
+        <a href="mailto:<%= supportEmail %>">
+          <%= supportEmail %>
+        </a>
+        <br />
+        WhatsApp:
+        <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
+          Clique aqui para falar no WhatsApp
+        </a>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p style="font-size: 14px">
+        © <%= year %> <%= siteName %>. Todos os direitos reservados.
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

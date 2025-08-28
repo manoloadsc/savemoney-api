@@ -1,0 +1,286 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "windows"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id       String    @id @default(uuid())
+  chat_id  String?   @unique
+  active   Boolean   @default(false)
+  name     String
+  email    String    @unique
+  password String
+  currency Currency? @default(BRL)
+  lang     Language? @default(pt)
+  completeInformation Boolean @default(false)
+
+  lastUseDate    DateTime  @default(now())
+  lastNotifiedAt DateTime?
+
+  sendMonthAnalyis DateTime?
+
+  stripeCustomerId     String? @unique
+  stripeSubscriptionId String? @unique
+
+  messages      Messages[]
+  payments      Payment[]
+  subscriptions Subscription[]
+
+  changepassword_at DateTime?
+  emailVerified_at  DateTime?
+  numberVerified_at DateTime?
+  timeZone          String?
+
+  transactions         Transaction[]
+  parcels              Parcels[]
+  notifications        Notifications[]
+  notificationMessages NotificationMessage[]
+
+  resets    PasswordReset[]
+  authCodes authCode[]
+}
+
+model authCode {
+  id       Int    @id @default(autoincrement())
+  userId   String
+  authCode String
+
+  createdAt DateTime @default(now())
+  expiredAt DateTime
+
+  used Boolean @default(false)
+
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id                 String    @id @default(cuid())
+  userId             String
+  stripeId           String // subscription_id do Stripe (ex: sub_123)
+  planId             String // ID do plano no Stripe (price_xxx)
+  status             String // active, trialing, canceled, past_due
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  canceledAt         DateTime? // se foi cancelado
+  createdAt          DateTime  @default(now())
+
+  user     Users     @relation(fields: [userId], references: [id])
+  payments Payment[] // <- novo: relação com pagamentos
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jti       String   @unique
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  subscriptionId  String? // opcional para pagamento avulso
+  stripePaymentId String
+  status          String
+  amount          Int
+  currency        String
+  method          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user         Users         @relation(fields: [userId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(40)
+
+  transactions  Transaction[]
+  notifications Notifications[]
+}
+
+model Messages {
+  id        Int         @id @default(autoincrement())
+  clientId  String
+  user      Users       @relation(fields: [clientId], references: [id])
+  content   String
+  createdAt DateTime    @default(now())
+  from      FromMessage
+}
+
+model customerPayments {
+  customerId String   @id @default(uuid())
+  paymentId  String
+  payedAt    DateTime
+}
+
+model Transaction {
+  id                 Int           @id @default(autoincrement())
+  description        String
+  type               FinancialType
+  value              Decimal       @db.Decimal(10, 2)
+  recurrenceCount    Int           @default(1)
+  recurrenceInterval Interval
+  userId             String
+  active             Boolean       @default(true)
+
+  referenceDate     DateTime
+  nextReferenceDate DateTime
+
+  deletedAt DateTime?
+  updatedAt DateTime?
+
+  categoryId Int
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  parcels       Parcels[]
+  notifications Notifications?
+  user          Users          @relation(fields: [userId], references: [id])
+}
+
+model Notifications {
+  id                     Int                 @id @default(autoincrement())
+  description            String
+  purpose                notificationPurpose
+  isFutureGoal           Boolean             @default(false)
+  recurrenceIntervalDays Interval
+  recurrenceCount        Int?
+  notificationTimes      Int                 @default(0)
+  userId                 String
+  active                 Boolean             @default(true)
+  value                  Decimal             @db.Decimal(10, 2)
+
+  type       FinancialType @default(GASTO)
+  categoryId Int
+
+  referenceDate        DateTime
+  nextNotificationDate DateTime?
+
+  deletedAt DateTime?
+  updatedAt DateTime?
+
+  transactionId Int? @unique
+
+  category    Category     @relation(fields: [categoryId], references: [id])
+  transaction Transaction? @relation(fields: [transactionId], references: [id])
+  user        Users        @relation(fields: [userId], references: [id])
+
+  messages NotificationMessage[]
+}
+
+model NotificationMessage {
+  id             Int                        @id @default(autoincrement())
+  notificationId Int
+  month          DateTime
+  status         NotificationResponseStatus
+  createdAt      DateTime                   @default(now())
+
+  whaId String?
+
+  answerTime DateTime?
+  viwedAt    DateTime?
+
+  userId String
+
+  notification Notifications @relation(fields: [notificationId], references: [id])
+  user         Users         @relation(fields: [userId], references: [id])
+
+  @@unique([notificationId, month])
+}
+
+model Parcels {
+  id             Int     @id @default(autoincrement())
+  transactionId  Int?
+  notificationId Int?
+  userId         String
+  value          Decimal @db.Decimal(10, 2)
+  notified       Boolean @default(false)
+
+  count Int
+
+  deletedAt DateTime?
+  updatedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  transaction Transaction? @relation(fields: [transactionId], references: [id])
+  user        Users        @relation(fields: [userId], references: [id])
+}
+
+enum Language {
+  en
+  pt
+  es
+}
+
+enum Currency {
+  USD // equador e EUA
+  EUR
+  BRL
+  MXN // mexico
+  CLP // chile
+  ARS // argentina
+  PYG // paraguay
+  COP // colombia
+  BOB // bolivia
+  UYU // uruguai
+  PEN // Peru
+}
+
+enum RemindPeriod {
+  DIARY
+  WEECKLY
+  MONTHLY
+  YEARLY
+}
+
+enum FinancialType {
+  GANHO
+  GASTO
+}
+
+enum FromMessage {
+  BOT
+  USER
+}
+
+enum Interval {
+  WEECKLY
+  MONTHLY
+  DIARY
+  YEARLY
+}
+
+enum EntryRemindType {
+  REMIND_ONLY
+  REMIND_TOO
+  NO_REMIND
+}
+
+enum notificationPurpose {
+  INFO
+  CONFIRM
+}
+
+enum NotificationResponseStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}

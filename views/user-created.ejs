@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/public/styles/email.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img class="logo" src="<%= logoUrl %>" alt="<%= siteName %>" />
+      <h1><%= title %></h1>
+    </div>
+
+    <div class="content">
+      <h2>Olá, <%= username %>!</h2>
+      <p style="font-size: 16px">
+        Sua conta foi criada com sucesso. Abaixo estão os dados de acesso:
+      </p>
+
+      <p style="font-size: 16px">
+        <b>Email:</b> <%= email %> <br/>
+        <b>Senha:</b> <%= password %>
+      </p>
+
+      <a target="_blank" href="<%= loginUrl %>" class="button">
+        Acessar a Plataforma
+      </a>
+
+      <p style="font-size: 16px">
+        Não compartilhe esses dados com ninguém. Caso tenha dúvidas, nosso suporte está disponível:
+      </p>
+      <p style="font-size: 16px">
+        E-mail: <a href="mailto:<%= supportEmail %>"><%= supportEmail %></a><br/>
+        WhatsApp: <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
+          Clique aqui para falar no WhatsApp
+        </a>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p style="font-size: 14px">
+        © <%= year %> <%= siteName %>. Todos os direitos reservados.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
