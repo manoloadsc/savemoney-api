@@ -3,7 +3,7 @@ import { format, isDate, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { badRequestError } from "errors/defaultErrors.js";
 
-export function formatCurrency(value: string | number | Decimal) {
+export function formatCurrency(value: string | number | Decimal, currency: string) {
     let numericValue: number;
 
     if (typeof value === "string") {
@@ -18,7 +18,7 @@ export function formatCurrency(value: string | number | Decimal) {
 
     return Intl.NumberFormat("pt-BR",  {
         style : "currency",
-        currency : "BRL"
+        currency
     }).format(numericValue)
 
 }

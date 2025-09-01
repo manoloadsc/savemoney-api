@@ -122,19 +122,24 @@ ${listCategoriesWithId()}
 
         const contextToolsToSend = !lastMessageContext.isChitChat ? lastMessageContext.tools
         : lastMessageContext.tools.length === 0 ? contextTools.tools : lastMessageContext.tools
+
+        const user = await userService.getUser(userId)
+
+        console.log(user)
+
         console.log("tools : ",contextToolsToSend.map( c => c.function.name).join(', '))
         let userContext = await this.getUserContext(userId)
         messages = userContext
         if (directRules) {
             messages.push(directRules)
         } else {
-            let userRules = this.buildUserRelevantToolContext(userId, contextToolsToSend)
+            let userRules = this.buildUserRelevantToolContext(userId, contextToolsToSend, user?.currency || "BRL", user?.lang || "pt")            
             messages.push(userRules)
         }
         return { messages, tools: contextToolsToSend }
     }
 
-    private buildUserRelevantToolContext(userId: string, tools: ChatCompletionTool[]): ChatCompletionMessageParam {
+    private buildUserRelevantToolContext(userId: string, tools: ChatCompletionTool[], currency: string, lang: string): ChatCompletionMessageParam {
         let keys = tools.map(tool => tool.function.name) as ToolFunctionNames[];
 
         const date = new Date();
@@ -142,8 +147,9 @@ ${listCategoriesWithId()}
 
         const context: string[] = [];
 
-        context.push(`Financial assistant for user ${userId} (${today}). Always respond in Brazilian Portuguese.`);
+        context.push(`Financial assistant for user ${userId} (${today}). Always respond in ${lang}.`);
         context.push(`You have access to financial tools. Use them automatically when relevant.`);
+        context.push(`The user's preferred currency is ${currency}. Use it for all monetary values.`);
         context.push(`Do not echo context or meta-messages.`);
         context.push(`All input dates must follow this format: YYYY-MM-DDTHH:mm:ss.sss (never include Z).`);
         context.push(`When parsing times like "3 o'clock", default to 15:00 (PM) unless AM is explicitly stated.`);
@@ -252,7 +258,7 @@ metrics: {
 
     async sendMessage(userId: string): Promise<ChatCompletion> {
         let { messages, tools } = await this.buildUserContext(userId)
-        return await this.client.chat.completions.create({ model: "gpt-4.1-nano", messages, tools: tools, tool_choice: "auto", max_completion_tokens: 500 })
+        return await this.client.chat.completions.create({ model: "gpt-4.1-mini", messages, tools: tools, tool_choice: "auto", max_completion_tokens: 500 })
     }
 
     async sendCustomMessage(tools: ChatCompletionTool[], messages: ChatCompletionMessageParam[], model: ChatModel, userId: string) {
@@ -260,11 +266,12 @@ metrics: {
     }
 
     async createUserMonthAnalysis(userId: string) {
-        let userContext = this.buildUserRelevantToolContext(userId, analysisOnlyTools)
+        const user = await userService.getUser(userId)
+        let userContext = this.buildUserRelevantToolContext(userId, analysisOnlyTools, user?.currency || "BRL", user?.lang || "pt")
         const { gastos, receitas, balance, byGroupSumExpenses, byGroupSumReceipts, total } = await dashboardService.buildDashboard(userId, 10000, 1, "month")
         const panel = await dashboardService.deepAnalysis(userId, 10000, 1, "month")
         const transaction = await dashboardService.transactionsWithMissingParcels(userId, 10000, 1, "month")
-        let adicionalInfo = botMessages.contextExplanation(balance, receitas, gastos, transaction.entries, byGroupSumExpenses, byGroupSumReceipts, panel, total)
+        let adicionalInfo = botMessages.contextExplanation(balance, receitas, gastos, transaction.entries, byGroupSumExpenses, byGroupSumReceipts, panel, total, user?.currency || "BRL");
         let gptMessage = await this.sendCustomMessage(analysisOnlyTools, [userContext, adicionalInfo], "gpt-4.1-nano", userId)
         const toolCalled = gptMessage.choices?.[0]?.message?.tool_calls;
         
@@ -292,10 +299,11 @@ metrics: {
         const timeZone = user?.timeZone || "America/Sao_Paulo";
         switch (name) {
             case "add_finance": {
+                console.log("add_finance", args);
                 const valid = gptCreateTransictionValidation.parse(args);
                 const { transaction } = await transactionsService.createTransaction(valid, userId);
                 const { databaseDate, userDate } = userDateTime(transaction.nextReferenceDate.toISOString(), user?.timeZone || "America/Sao_Paulo");
-                messageToSend = botMessages.newFinance(transaction.category.name, transaction.value, transaction.recurrenceCount, transaction.description, userDate, transaction.id);
+                messageToSend = botMessages.newFinance(transaction.category.name, transaction.value, transaction.recurrenceCount, transaction.description, userDate, transaction.id, user?.currency!);
                 summary = `Usuário criou uma transação: '${transaction.description}' no valor de R$ ${transaction.value.toNumber()} ${userDate} id dela : ${transaction.id}`;
                 break;
             }
@@ -313,7 +321,7 @@ metrics: {
                 }
                 let receiptCount = analysis.byDay.reduce((acc, b) => acc + b.countGanho , 0)
                 let expenseCount = analysis.byDay.reduce((acc, b) => acc + b.countGasto , 0)
-                messageToSend = botMessages.listAnalyis(analysis.balance, analysis.receitas, analysis.gastos, analysis.byGroupSumExpenses, analysis.byGroupSumReceipts, receiptCount, expenseCount,dataInicial, dataFinal);
+                messageToSend = botMessages.listAnalyis(analysis.balance, analysis.receitas, analysis.gastos, analysis.byGroupSumExpenses, analysis.byGroupSumReceipts, receiptCount, expenseCount, user?.currency!,dataInicial, dataFinal);
                 summary = `Usuário analisou as finanças (${rangeType}) ${dataInicial && dataFinal ? `(de ${dataInicial} à ${dataFinal})` : ""}`;
                 break;
             }
@@ -329,7 +337,7 @@ metrics: {
                     break;
                 }
 
-                messageToSend = botMessages.listEntries(transactions.entries);
+                messageToSend = botMessages.listEntries(transactions.entries, user?.currency!);
                 summary = `Usuário listou transações com filtros aplicados.`;
                 break;
             }
@@ -359,11 +367,11 @@ metrics: {
                 const data = updateParcelValidation.parse(args);
                 try {
                     const update = await transactionsService.updateParcel(data, userId);
-                    messageToSend = botMessages.updateParcel(update.value, update.createdAt);
-                    summary = `Usuário atualizou parcela da transação para ${formatCurrency(update.value.toNumber())} (${update.id}).`;
+                    messageToSend = botMessages.updateParcel(update.value, update.createdAt, user?.currency!);
+                    summary = `Usuário atualizou parcela da transação para ${formatCurrency(update.value.toNumber(), user?.currency!)} (${update.id}).`;
                 } catch (error) {
                     messageToSend = botMessages.parcelNotFound();
-                    summary = `Usuário queria atualizar a parcela da transação. para ${data.value ? formatCurrency(data.value) : ""} ${data.date ? formatDate(data.date) : ""} (${data.id}).`;
+                    summary = `Usuário queria atualizar a parcela da transação. para ${data.value ? formatCurrency(data.value, user?.currency!) : ""} ${data.date ? formatDate(data.date) : ""} (${data.id}).`;
                 }
                 break;
             }
@@ -371,7 +379,7 @@ metrics: {
             case "create_notification": {
                 const data = createNotificationValidation.parse(args);
                 const created = await notificationService.createFutureGoalNotification(data, userId);
-                messageToSend = botMessages.createdNotification(created);
+                messageToSend = botMessages.createdNotification(created, user?.currency!);
                 summary = `Usuário criou notificação (${created.id}): ${created.description}, R$ ${created.value}`;
                 break;
             }
@@ -385,7 +393,7 @@ metrics: {
                     break;
                 }
                 const update = await notificationService.updateNotification(userId, data, data.id);
-                messageToSend = botMessages.updateNotifications(update);
+                messageToSend = botMessages.updateNotifications(update, user?.currency!);
                 summary = `Usuário atualizou notificação (${update.id}).`;
                 break;
             }
@@ -400,7 +408,7 @@ metrics: {
                     break;
                 }
 
-                messageToSend = botMessages.listNotifications(notifications);
+                messageToSend = botMessages.listNotifications(notifications, user?.currency!);
                 summary = `Usuário listou notificações.`;
                 break;
             }

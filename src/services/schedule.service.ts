@@ -34,7 +34,7 @@ class scheduleService {
         const promises = users.map(async (user) => {
           const analysis = await gptService.createUserMonthAnalysis(user.id)
           try {
-            const messageId = await whatssapService.userMonthAnalysis(user.chat_id!, analysis)
+            const messageId = await whatssapService.userMonthAnalysis(user.chat_id!, analysis, user.currency!)
             console.log(messageId)
           } catch (error) {
             console.log(`Erro ao enviar notificação para o usuário: ${user.chat_id} ${user.name}`);
@@ -54,6 +54,9 @@ class scheduleService {
         console.log(`🔔 Notificação ${notification.purpose} para usuário: ${notification.id} ${notification.user.chat_id} ${notification.user.name}`)
         let notificationId
 
+        const user = await userService.getuserByChatId(notification.user.chat_id!) 
+        if(!user) return;
+
         try {
           if (
             // notification.notificationTimes > 1 && 
@@ -62,13 +65,13 @@ class scheduleService {
               const { messageId } = await whatssapService.noPriceNotification(notification.user.chat_id!, notification.user.name, notification.description)
               notificationId = messageId
             } else {
-              const { messageId } = await whatssapService.sendNotificationTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value!))
+              const { messageId } = await whatssapService.sendNotificationTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value!, user.currency!))
               notificationId = messageId
             }
           }
 
           if (notification.purpose === "INFO") {
-            const { messageId } = await whatssapService.sendTransacionParcelTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value))
+            const { messageId } = await whatssapService.sendTransacionParcelTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value, user.currency!))
           }
         } catch (error) {
           console.log(`Erro ao enviar notificação para o usuário: ${notification.id} ${notification.user.chat_id} ${notification.user.name}`);

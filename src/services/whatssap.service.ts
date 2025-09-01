@@ -285,7 +285,7 @@ Para continuar utilizando o EconomizeAI é necessário realizar seu cadastro ou 
     }
   }
 
-  async userMonthAnalysis(to : string, content : UserMonthAnalysis) {
+  async userMonthAnalysis(to : string, content : UserMonthAnalysis, currency: string) {
 
     const { panel, total,receitas ,resume, metrics, plan, next_30days, next_90days, bye_message, actionPlan } = content
     const { essencials, investiments, isLeisure, draeamAndReservation, education } = panel
@@ -299,12 +299,12 @@ Para continuar utilizando o EconomizeAI é necessário realizar seu cadastro ou 
       .map((s) => toText(s || "opção"));
 
     const params = [
-                { type: "text", text: `${formatCurrency(essencials.value)} (${essencials.percentage.toFixed(2)}%)`},
-                { type: "text", text: `${formatCurrency(isLeisure.value)} (${isLeisure.percentage.toFixed(2)}%)`},
-                { type: "text", text: `${formatCurrency(education.value)} (${education.percentage.toFixed(2)}%)`},
-                { type: "text", text: `${formatCurrency(investiments.value)} (${investiments.percentage.toFixed(2)}%)`},
-                { type: "text", text: `${formatCurrency(draeamAndReservation.value)} (${draeamAndReservation.percentage.toFixed(2)}%)`},
-                { type: "text", text: `${formatCurrency(receitas)}`},
+                { type: "text", text: `${formatCurrency(essencials.value, currency)} (${essencials.percentage.toFixed(2)}%)`},
+                { type: "text", text: `${formatCurrency(isLeisure.value, currency)} (${isLeisure.percentage.toFixed(2)}%)`},
+                { type: "text", text: `${formatCurrency(education.value, currency)} (${education.percentage.toFixed(2)}%)`},
+                { type: "text", text: `${formatCurrency(investiments.value, currency)} (${investiments.percentage.toFixed(2)}%)`},
+                { type: "text", text: `${formatCurrency(draeamAndReservation.value, currency)} (${draeamAndReservation.percentage.toFixed(2)}%)`},
+                { type: "text", text: `${formatCurrency(receitas, currency)}`},
                 { type: "text", text: `${resume}`},
                 { type: "text", text: `${metrics.essentials}`},
                 { type: "text", text: `${metrics.leisure}`},

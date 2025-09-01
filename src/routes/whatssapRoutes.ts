@@ -11,6 +11,7 @@ import { notFoundError } from "errors/defaultErrors.js";
 export default async function whatssapRoutes(server: FastifyInstance) {
     server.get("/webhook", { schema: { hide: true } }, async (req: FastifyRequest, res: FastifyReply) => {
         let query = req.query as any;
+        console.log(query);
         const mode = query["hub.mode"];
         const token = query["hub.verify_token"];
         const challenge = query["hub.challenge"];

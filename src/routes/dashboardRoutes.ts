@@ -14,30 +14,31 @@ export default async function dashboardRoutes(app: FastifyInstance) {
         schema: {
             tags: ['Dashboard'],
             query: zodToJsonSchema(dashboardResumeValidation),
-            response : { 
-                200 : zodToJsonSchema(dashboardSchema)
+            response: {
+                200: zodToJsonSchema(dashboardSchema)
             },
-            security : [{ bearerAuth : [] }]
+            security: [{ bearerAuth: [] }]
         }
-    },async (req, res) => {
+    }, async (req, res) => {
         let query = req.query as DashboardResumeDTO;
+        console.log(query);
         let range = getDateRangeByType(query.searchType, query.startDate, query.endDate);
 
         let start = query.searchType !== "all" ? range!.gte : new Date(0);
         let end = query.searchType !== "all" ? range!.lte : new Date();
 
         let dashboard = await dashboardService.buildDashboard(req.user.id, query.perPage, query.page, query.searchType, start, end, query.search);
-        res.status(200).send({ 
-            receitas : formatCurrency(dashboard.receitas), 
-            gastos : formatCurrency(dashboard.gastos),
-            balance : formatCurrency(dashboard.balance),
-            total : formatCurrency(dashboard.total),
-            byGroupSumExpenses : dashboard.byGroupSumExpenses.filter(gasto => !gasto.value.equals(0)),
-            byGroupSumReceipts : dashboard.byGroupSumReceipts.filter( receitas => !receitas.value.equals(0)),
-            parcelsToSend : dashboard.parcelsToSend,
-            totalTransactionsCount : dashboard.totalTransactionsCount,
-            byDay : dashboard.byDay
-         });
+        res.status(200).send({
+            receitas: dashboard.receitas,
+            gastos: dashboard.gastos,
+            balance: dashboard.balance,
+            total: dashboard.total,
+            byGroupSumExpenses: dashboard.byGroupSumExpenses.filter(gasto => !gasto.value.equals(0)),
+            byGroupSumReceipts: dashboard.byGroupSumReceipts.filter(receitas => !receitas.value.equals(0)),
+            parcelsToSend: dashboard.parcelsToSend,
+            totalTransactionsCount: dashboard.totalTransactionsCount,
+            byDay: dashboard.byDay
+        });
     })
 
 }

@@ -7,6 +7,7 @@ import { badRequestError } from "errors/defaultErrors.js";
 import { getDateRangeByType } from "utils/dateRange.js";
 import { isEssential, isEducation, isInvestment, isLeisure, isDreamAndReservation } from "types/categories.js";
 import { Decimal } from "@prisma/client/runtime/library";
+import userService from "./user.service.js";
 
 export type panelType =  Awaited<ReturnType<typeof DashboardService.prototype.deepAnalysis>> 
 
@@ -35,13 +36,17 @@ class DashboardService {
                 userId,
             },
         })
+
+        const user = await userService.getUser(userId);
+
         return {
             receitas, gastos, balance, total,
             byGroupSumExpenses: byGroup.map(b => ({ name: b.name, value: b.gasto, percentage : b.gasto.dividedBy(gastos).mul(100) })).filter(b => b.value.greaterThan(0)),
             byGroupSumReceipts: byGroup.map(b => ({ name: b.name, value: b.ganho, percentage : b.ganho.dividedBy(receitas).mul(100) })).filter(b => b.value.greaterThan(0)),
             parcelsToSend: lastTransactions,
             totalTransactionsCount,
-            byDay
+            byDay,
+            currency: user?.currency || "BRL"
         };
     }
 

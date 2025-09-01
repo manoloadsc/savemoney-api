@@ -10,162 +10,162 @@ interface ToolEmbedding {
   vector: number[];
 }
 
-// ---- Config simples (pode trocar por env) ----
+// ---- Configuración simple (puedes cambiar por env) ----
 const EMBED_MODEL : EmbeddingModel = "text-embedding-3-small";
 
-// prefixo “passage:” ajuda alguns encoders
+// el prefijo “passage:” ayuda a algunos encoders
 const passage = (t: string) => `passage: ${t}`;
 
-// sinônimos/exemplos positivos reais do usuário (pt-BR)
+// sinónimos/ejemplos positivos reales del usuario (es-ES)
 const POSITIVES: Partial<Record<ToolFunctionNames, string[]>> = {
   list_entries: [
-    "listar minhas movimentações",
-    "mostrar meu extrato deste mês",
-    "ver meus lançamentos de hoje",
-    "consultar transações recentes",
-    "exibir despesas de agosto",
-    "filtrar entradas e saídas da última semana",
-    "me mostra ganhos e gastos",
-    "listar meus gastos de 2025-07-01 a 2025-07-15",
-    "quero ver minhas transações",
+    "listar mis movimientos",
+    "mostrar mi extracto de este mes",
+    "ver mis registros de hoy",
+    "consultar transacciones recientes",
+    "mostrar gastos de agosto",
+    "filtrar ingresos y egresos de la última semana",
+    "muéstrame ingresos y gastos",
+    "listar mis gastos del 2025-07-01 al 2025-07-15",
+    "quiero ver mis transacciones",
   ],
   add_finance: [
-    "registrar gasto de R$50 em alimentação",
-    "adicionar ganho de R$2000 salário",
-    "lançar uma despesa de mercado 120 reais",
-    "criar uma nova receita de 300",
-    "Pode criar uma nova transação financeira no valor de 400 reais sobre ir para a igreja",
-    "Comprei um biscoito de 60 reais",
-    "Recebi 1400 reais em um salario, registre isso"
+    "registrar gasto de $50 en alimentación",
+    "añadir ingreso de $2000 salario",
+    "registrar un gasto de supermercado 120 pesos",
+    "crear un nuevo ingreso de 300",
+    "¿Puedes crear una nueva transacción financiera por 400 pesos sobre ir a la iglesia?",
+    "Compré una galleta de 60 pesos",
+    "Recibí 1400 pesos en un salario, regístralo"
   ],
   delete_transaction: [
-    "apagar transação 123",
-    "excluir lançamento 456",
-    "remover esse pagamento errado",
-    "deletar entrada duplicada",
-    "cancelar essa movimentação",
+    "borrar transacción 123",
+    "eliminar registro 456",
+    "quitar este pago erróneo",
+    "borrar entrada duplicada",
+    "cancelar este movimiento",
   ],
   update_transaction: [
-    "corrigir valor da transação 123 para 250",
-    "atualizar descrição da transação 456",
-    "editar data do lançamento 789 para 2025-08-01",
+    "corregir valor de la transacción 123 a 250",
+    "actualizar descripción de la transacción 456",
+    "editar fecha del registro 789 a 2025-08-01",
   ],
   list_analysis: [
-    "resumo dos meus gastos dos últimos 15 dias",
-    "qual meu saldo do mês?",
-    "me dá uma visão geral por categoria",
-    "relate meu saldo",
+    "resumen de mis gastos de los últimos 15 días",
+    "¿cuál es mi saldo del mes?",
+    "dame una visión general por categoría",
+    "informa mi saldo",
   ],
   deep_analysis: [
-    "análise profunda de gastos de junho",
-    "gerar relatório detalhado de ganhos",
-    "faça uma análise completa do meu orçamento",
+    "análisis profundo de gastos de junio",
+    "generar informe detallado de ingresos",
+    "haz un análisis completo de mi presupuesto",
   ],
   create_notification: [
-    "lembre-me de pagar aluguel todo mês",
-    "criar notificação para fatura do cartão",
-    "me lembre amanhã de pagar o boleto",
-    "pode atualizar a notificação 3 para o valor de 4100 reais ?",
+    "recuérdame pagar el alquiler cada mes",
+    "crear notificación para la factura de la tarjeta",
+    "recuérdame mañana pagar el recibo",
+    "¿puedes actualizar la notificación 3 al valor de 4100 pesos?",
   ],
   update_notification: [
-    "atualizar descrição do lembrete 123 para pagar conta de luz",
-    "alterar data do lembrete 456 para 2025-08-01",
+    "actualizar descripción del recordatorio 123 para pagar la luz",
+    "cambiar fecha del recordatorio 456 a 2025-08-01",
   ],
   list_notifications: [
-    "mostrar minhas notificações ativas",
-    "listar lembretes",
-    "exibir lembretes de agosto",
-    "pode listar as notificações pra mim ?"
+    "mostrar mis notificaciones activas",
+    "listar recordatorios",
+    "mostrar recordatorios de agosto",
+    "¿puedes listar las notificaciones para mí?"
   ],
   delete_notification: [
-    "remover lembrete 789",
-    "deletar notificação 321",
+    "eliminar recordatorio 789",
+    "borrar notificación 321",
   ],
   delete_parcel: [
-    "remover parcela 012",
-    "deletar parcela 345",
+    "eliminar cuota 012",
+    "borrar cuota 345",
   ],
   update_transicion_parcel: [
-    "atualizar parcela 12 para valor 200",
-    "ajustar data de vencimento da parcela 03",
+    "actualizar cuota 12 al valor 200",
+    "ajustar fecha de vencimiento de la cuota 03",
   ],
   escalate_to_human_support: [
-    "falar com atendente",
-    "chamar suporte humano",
-    "tenho um erro preciso de ajuda",
-    "Eu quero falar com suporte humano."
+    "hablar con un agente",
+    "llamar a soporte humano",
+    "tengo un error, necesito ayuda",
+    "Quiero hablar con soporte humano."
   ],
 };
 
-// anti-exemplos (intenções vizinhas que confundem)
+// anti-ejemplos (intenciones cercanas que confunden)
 const NEGATIVES: Partial<Record<ToolFunctionNames, string[]>> = {
   list_entries: [
-    "apagar transação 123",
-    "deletar lançamento",
-    "adicionar nova despesa",
-    "criar receita",
-    "editar valor da transação",
+    "borrar transacción 123",
+    "eliminar registro",
+    "añadir nuevo gasto",
+    "crear ingreso",
+    "editar valor de la transacción",
   ],
   delete_transaction: [
-    "listar minhas movimentações",
-    "mostrar extrato",
-    "ver lançamentos",
-    "adicionar uma despesa",
-    "atualizar uma transação",
+    "listar mis movimientos",
+    "mostrar extracto",
+    "ver registros",
+    "añadir un gasto",
+    "actualizar una transacción",
   ],
   add_finance: [
-    "listar minhas movimentações",
-    "apagar transação",
+    "listar mis movimientos",
+    "borrar transacción",
   ],
   list_analysis: [
-    "apagar transação",
-    "adicionar despesa",
-    "editar transação",
+    "borrar transacción",
+    "añadir gasto",
+    "editar transacción",
   ],
   update_transaction: [
-    "listar minhas movimentações",
-    "apagar transação",
-    "adicionar despesa",
+    "listar mis movimientos",
+    "borrar transacción",
+    "añadir gasto",
   ],
   update_transicion_parcel : [
-    "listar minhas movimentações",
-    "Ataulizar transação",
-    "Atualizar valor da transação para",
-    "Pode fazer uma analise",
+    "listar mis movimientos",
+    "Actualizar transacción",
+    "Actualizar valor de la transacción a",
+    "¿Puedes hacer un análisis?",
   ],
   create_notification : [
-    "criar uma nova transação",
+    "crear una nueva transacción",
   ]
 };
 
-// descrição base (curta, direta)
+// descripción base (curta, direta)
 const DESC_BASE: Partial<Record<ToolFunctionNames, string>> = {
   list_entries:
-    "Lista/exibe/mostra/consulta movimentações, extrato, lançamentos, transações; suporta filtros por data/categoria/valor. Não cria/edita/apaga.",
+    "Lista/muestra/consulta movimientos, extractos, registros, transacciones; soporta filtros por fecha/categoría/valor. No crea/edita/borra.",
   add_finance:
-    "Registra/adiciona/cria transações financeiras (despesas/receitas). Não lista, não apaga, não atualiza.",
+    "Registra/añade/crea transacciones financieras (gastos/ingresos). No lista, no borra, no actualiza.",
   delete_transaction:
-    "Apaga/exclui/remove uma transação. Operação destrutiva. Exige confirmação/id claro.",
+    "Borra/elimina/quita una transacción. Operación destructiva. Requiere confirmación/id claro.",
   update_transaction:
-    "Atualiza/edita/corrige uma transação existente (valor, descrição, data, categoria). Não cria nem apaga.",
+    "Actualiza/edita/corrige una transacción existente (valor, descripción, fecha, categoría). No crea ni borra.",
   list_analysis:
-    "Resumo/visão geral dos gastos/ganhos em período; métricas, totais, categorias. Não mexe em dados.",
+    "Resumen/visión general de gastos/ingresos en un periodo; métricas, totales, categorías. No modifica datos.",
   deep_analysis:
-    "Análise profunda/relatório detalhado de finanças com insights e explicações. Não mexe em dados.",
+    "Análisis profundo/informe detallado de finanzas con insights y explicaciones. No modifica datos.",
   create_notification:
-    "Cria lembretes/notificações (pagar contas, metas, datas). Não altera nem exclui existente.",
+    "Crea recordatorios/notificaciones (pagar cuentas, metas, fechas). No altera ni elimina existentes.",
   update_notification:
-    "Atualiza um lembrete existente (título, data, descrição). Não cria nem apaga.",
+    "Actualiza un recordatorio existente (título, fecha, descripción). No crea ni borra.",
   list_notifications:
-    "Lista/exibe/mostra notificações/lembretes ativos ou futuros. Não cria/edita/apaga.",
+    "Lista/muestra notificaciones/recordatorios activos o futuros. No crea/edita/borra.",
   delete_notification:
-    "Exclui/apaga/remover um lembrete. Operação destrutiva. Exige identificação clara.",
+    "Elimina/borra/quita un recordatorio. Operación destructiva. Requiere identificación clara.",
   delete_parcel:
-    "Apaga/exclui/remove uma parcela específica de uma transação parcelada. Destrutivo.",
+    "Borra/elimina/quita una cuota específica de una transacción en cuotas. Destructivo.",
   update_transicion_parcel:
-    "Atualiza/edita dados de uma parcela (valor, data, status). Não cria nem apaga.",
+    "Actualiza/edita datos de una cuota (valor, fecha, estado). No crea ni borra.",
   escalate_to_human_support:
-    "Encaminha para atendente humano em caso de erro, dúvida, contestação ou suporte.",
+    "Escala a un agente humano en caso de error, duda, disputa o soporte.",
 };
 
 function buildInput(name: ToolFunctionNames, originalDesc: string) {
@@ -173,15 +173,15 @@ function buildInput(name: ToolFunctionNames, originalDesc: string) {
   const pos = POSITIVES[name] ?? [];
   const neg = NEGATIVES[name] ?? [];
 
-  // enriquecemos o texto que vai para o embedding com:
-  // - o que faz / quando usar
-  // - exemplos positivos (sinônimos/jeitos de pedir)
-  // - quando NÃO usar (anti-exemplos próximos)
+  // enriquecemos el texto que va para el embedding con:
+  // - qué hace / cuándo usar
+  // - ejemplos positivos (sinónimos/formas de pedir)
+  // - cuándo NO usar (anti-ejemplos cercanos)
   const text =
     `${name} — ${desc} | ` +
-    `Quando usar: ${pos.slice(0, 8).join("; ")} | ` +
-    (neg.length ? `Quando NÃO usar: ${neg.slice(0, 6).join("; ")} | ` : "") +
-    `Exemplos: ${pos.slice(0, 8).join("; ")}`;
+    `Cuándo usar: ${pos.slice(0, 8).join("; ")} | ` +
+    (neg.length ? `Cuándo NO usar: ${neg.slice(0, 6).join("; ")} | ` : "") +
+    `Ejemplos: ${pos.slice(0, 8).join("; ")}`;
 
   return passage(text);
 }
@@ -201,13 +201,13 @@ async function computeToolEmbeddings(): Promise<void> {
       });
       const vector = response.data?.[0]?.embedding as number[];
       if (!Array.isArray(vector) || vector.length === 0) {
-        console.warn(`Embedding vazio para ${tool.function.name}, pulando.`);
+        console.warn(`Embedding vacío para ${tool.function.name}, saltando.`);
         continue;
       }
       embeddings.push({ name: tool.function.name, vector });
-      console.log(`Computed embedding for ${tool.function.name}`);
+      console.log(`Embedding calculado para ${tool.function.name}`);
     } catch (err) {
-      console.error(`Erro ao computar embedding para ${tool.function.name}:`, err);
+      console.error(`Error al calcular embedding para ${tool.function.name}:`, err);
     }
   }
 
@@ -215,7 +215,7 @@ async function computeToolEmbeddings(): Promise<void> {
   mkdirSync(outDir, { recursive: true });
   const outPath = path.join(outDir, "toolEmbeddings.json");
   writeFileSync(outPath, JSON.stringify(embeddings, null, 2), "utf8");
-  console.log(`Saved embeddings to ${outPath}`);
+  console.log(`Embeddings guardados en ${outPath}`);
 }
 
 computeToolEmbeddings();
