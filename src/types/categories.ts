@@ -1,49 +1,51 @@
 import { Decimal } from "@prisma/client/runtime/library";
 
 /**
- * Catálogo de categorias com PT/EN unificados para evitar divergências.
+ * Catálogo de categorias com PT/EN/ES unificados para evitar divergências.
  * A ordem define o ID (1-based).
  */
 export const categories = [
-  { pt: "Doações",            en: "Donations" },
-  { pt: "Cursos",             en: "Courses" },
-  { pt: "Viagens",            en: "Travel" },
-  { pt: "Diversão",           en: "Entertainment" },
-  { pt: "Salário",            en: "Salary" },
-  { pt: "Aluguel",            en: "Rent" },
-  { pt: "Auxílio",            en: "Aid" },
-  { pt: "Rendimentos",        en: "Revenue" },
-  { pt: "Alimentação",        en: "Food" },
-  { pt: "Transporte",         en: "Transport" },
-  { pt: "Moradia",            en: "Housing" },
-  { pt: "Lazer",              en: "Leisure" },
-  { pt: "Educação",           en: "Education" },
-  { pt: "Roupas",             en: "Clothing" },
-  { pt: "Acessórios",         en: "Accessories" },
-  { pt: "Presentes",          en: "Gifts" },
-  { pt: "Animais",            en: "Pets" },
-  { pt: "Beleza",             en: "Beauty" },
-  { pt: "Outros",             en: "Other" },
+  { pt: "Doações",            en: "Donations",        es: "Donaciones" },
+  { pt: "Cursos",             en: "Courses",          es: "Cursos" },
+  { pt: "Viagens",            en: "Travel",           es: "Viajes" },
+  { pt: "Diversão",           en: "Entertainment",    es: "Entretenimiento" },
+  { pt: "Salário",            en: "Salary",           es: "Salario" },
+  { pt: "Aluguel",            en: "Rent",             es: "Alquiler" },
+  { pt: "Auxílio",            en: "Aid",              es: "Ayuda" },
+  { pt: "Rendimentos",        en: "Revenue",          es: "Ingresos" },
+  { pt: "Alimentação",        en: "Food",             es: "Alimentación" },
+  { pt: "Transporte",         en: "Transport",        es: "Transporte" },
+  { pt: "Moradia",            en: "Housing",          es: "Vivienda" },
+  { pt: "Lazer",              en: "Leisure",          es: "Ocio" },
+  { pt: "Educação",           en: "Education",        es: "Educación" },
+  { pt: "Roupas",             en: "Clothing",         es: "Ropa" },
+  { pt: "Acessórios",         en: "Accessories",      es: "Accesorios" },
+  { pt: "Presentes",          en: "Gifts",            es: "Regalos" },
+  { pt: "Animais",            en: "Pets",             es: "Mascotas" },
+  { pt: "Beleza",             en: "Beauty",           es: "Belleza" },
+  { pt: "Outros",             en: "Other",            es: "Otros" },
   // Novas categorias
-  { pt: "Investimento",       en: "Investment" },
-  { pt: "Poupança",           en: "Savings" },
-  { pt: "Cofrinho",           en: "Piggy Bank" },
-  { pt: "Reserva para Viagem",en: "Travel Fund" },
-  { pt: "Reserva para Sonhos",en: "Dream Fund" },
-  { pt: "Mentoria",           en: "Mentoring" },
-  { pt: "Assessoria",         en: "Consulting" },
-  { pt: "Faculdade",          en: "College" },
+  { pt: "Investimento",       en: "Investment",       es: "Inversión" },
+  { pt: "Poupança",           en: "Savings",          es: "Ahorros" },
+  { pt: "Cofrinho",           en: "Piggy Bank",       es: "Alcancía" },
+  { pt: "Reserva para Viagem",en: "Travel Fund",      es: "Fondo de Viaje" },
+  { pt: "Reserva para Sonhos",en: "Dream Fund",       es: "Fondo de Sueños" },
+  { pt: "Mentoria",           en: "Mentoring",        es: "Mentoría" },
+  { pt: "Assessoria",         en: "Consulting",       es: "Asesoría" },
+  { pt: "Faculdade",          en: "College",          es: "Universidad" },
 ] as const;
 
-/** Tipos derivados (PT e EN) */
+/** Tipos derivados (PT, EN e ES) */
 export type CategoryPT = typeof categories[number]["pt"];
 export type CategoryEN = typeof categories[number]["en"];
+export type CategoryES = typeof categories[number]["es"];
 
-/** Listas prontas em PT/EN (úteis para selects etc.) */
+/** Listas prontas em PT/EN/ES (úteis para selects etc.) */
 export const categoryNamesPT = categories.map(c => c.pt) as readonly CategoryPT[];
 export const categoryNamesEN = categories.map(c => c.en) as readonly CategoryEN[];
+export const categoryNamesES = categories.map(c => c.es) as readonly CategoryES[];
 
-/** Mapeamentos PT <-> EN e ID (1-based) */
+/** Mapeamentos PT <-> EN/ES e ID (1-based) */
 export const ptToEn: Record<CategoryPT, CategoryEN> = categories.reduce((acc, c) => {
   acc[c.pt] = c.en;
   return acc;
@@ -53,6 +55,26 @@ export const enToPt: Record<CategoryEN, CategoryPT> = categories.reduce((acc, c)
   acc[c.en] = c.pt;
   return acc;
 }, {} as Record<CategoryEN, CategoryPT>);
+
+export const ptToEs: Record<CategoryPT, CategoryES> = categories.reduce((acc, c) => {
+  acc[c.pt] = c.es;
+  return acc;
+}, {} as Record<CategoryPT, CategoryES>);
+
+export const esToPt: Record<CategoryES, CategoryPT> = categories.reduce((acc, c) => {
+  acc[c.es] = c.pt;
+  return acc;
+}, {} as Record<CategoryES, CategoryPT>);
+
+export const enToEs: Record<CategoryEN, CategoryES> = categories.reduce((acc, c) => {
+  acc[c.en] = c.es;
+  return acc;
+}, {} as Record<CategoryEN, CategoryES>);
+
+export const esToEn: Record<CategoryES, CategoryEN> = categories.reduce((acc, c) => {
+  acc[c.es] = c.en;
+  return acc;
+}, {} as Record<CategoryES, CategoryEN>);
 
 export const categoryIdByPT: Record<CategoryPT, number> = categories.reduce((acc, c, i) => {
   acc[c.pt] = i + 1; // 1-based
@@ -64,11 +86,22 @@ export const categoryIdByEN: Record<CategoryEN, number> = categories.reduce((acc
   return acc;
 }, {} as Record<CategoryEN, number>);
 
-/** Listagem formatada com ID (pode exibir PT/EN juntos) */
-export function listCategoriesWithId(includeEnglish = true): string {
+export const categoryIdByES: Record<CategoryES, number> = categories.reduce((acc, c, i) => {
+  acc[c.es] = i + 1; // 1-based
+  return acc;
+}, {} as Record<CategoryES, number>);
+
+/** Listagem formatada com ID (pode exibir PT/EN/ES juntos) */
+export function listCategoriesWithId(includeEnglish = true, includeSpanish = false): string {
   return categories
     .map((c, i) =>
-      includeEnglish ? `${i + 1} = ${c.pt} (${c.en})` : `${i + 1} = ${c.pt}`
+      includeEnglish && includeSpanish
+        ? `${i + 1} = ${c.pt} (${c.en}) [${c.es}]`
+        : includeEnglish
+        ? `${i + 1} = ${c.pt} (${c.en})`
+        : includeSpanish
+        ? `${i + 1} = ${c.pt} [${c.es}]`
+        : `${i + 1} = ${c.pt}`
     )
     .join("\n");
 }
@@ -131,7 +164,6 @@ function isCategoryInGroup<G extends keyof typeof categoryGroups>(
   cat: CategoryPT,
   group: G
 ): cat is (typeof categoryGroups)[G][number] {
-  // TS sabe que os arrays são readonly CategoryPT[], então não precisamos de `any`
   return (categoryGroups[group] as readonly CategoryPT[]).includes(cat);
 }
 
@@ -163,6 +195,9 @@ export interface ByCategory {
 }
 
 export const toEnglish = (pt: CategoryPT) => ptToEn[pt];
+export const toSpanish = (pt: CategoryPT) => ptToEs[pt];
 export const toPortuguese = (en: CategoryEN) => enToPt[en];
+export const toPortugueseFromES = (es: CategoryES) => esToPt[es];
 export const getIdByPT = (pt: CategoryPT) => categoryIdByPT[pt];
 export const getIdByEN = (en: CategoryEN) => categoryIdByEN[en];
+export const getIdByES = (es: CategoryES) => categoryIdByES[es];

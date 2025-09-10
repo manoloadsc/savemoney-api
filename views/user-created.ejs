@@ -1,49 +1,65 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/public/styles/email.css" />
 </head>
+
 <body>
   <div class="container">
     <div class="header">
-      <img class="logo" src="<%= logoUrl %>" alt="<%= siteName %>" />
-      <h1><%= title %></h1>
+      <img class="logo" src="https://api.savemoneyy/static/images/logo-savemoney.png" alt="<%= siteName %>" />
+      <h1>
+        <%= title %>
+      </h1>
     </div>
 
     <div class="content">
-      <h2>Olá, <%= username %>!</h2>
+      <h2>¡Hola, <%= username %>!</h2>
       <p style="font-size: 16px">
-        Sua conta foi criada com sucesso. Abaixo estão os dados de acesso:
+        Hemos recibido una solicitud para restablecer tu contraseña de acceso a la plataforma <b>
+          <%= siteName %>
+        </b>.
+      </p>
+      <p style="font-size: 16px">
+        Para continuar, haz clic en el botón de abajo y sigue las instrucciones:
       </p>
 
-      <p style="font-size: 16px">
-        <b>Email:</b> <%= email %> <br/>
-        <b>Senha:</b> <%= password %>
-      </p>
-
-      <a target="_blank" href="<%= loginUrl %>" class="button">
-        Acessar a Plataforma
+      <a target="_blank" href="<%= resetUrl %>" class="button">
+        Restablecer Contraseña
       </a>
 
       <p style="font-size: 16px">
-        Não compartilhe esses dados com ninguém. Caso tenha dúvidas, nosso suporte está disponível:
+        Si no solicitaste este cambio, ignora este correo electrónico. Tu cuenta permanecerá segura.
       </p>
       <p style="font-size: 16px">
-        E-mail: <a href="mailto:<%= supportEmail %>"><%= supportEmail %></a><br/>
-        WhatsApp: <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
-          Clique aqui para falar no WhatsApp
+        Si necesitas ayuda, nuestro soporte está disponible por correo electrónico o WhatsApp:
+      </p>
+      <p style="font-size: 16px">
+        Correo electrónico:
+        <a href="mailto:<%= supportEmail %>">
+          <%= supportEmail %>
+        </a>
+        <br />
+        WhatsApp:
+        <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
+          Haz clic aquí para hablar por WhatsApp
         </a>
       </p>
     </div>
 
     <div class="footer">
       <p style="font-size: 14px">
-        © <%= year %> <%= siteName %>. Todos os direitos reservados.
+        © <%= year %>
+          <%= siteName %>. Todos los derechos reservados.
       </p>
     </div>
   </div>
 </body>
+
 </html>

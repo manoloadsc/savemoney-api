@@ -3,7 +3,6 @@ import { Resend } from "resend";
 import ejs from "ejs";
 import fs from "fs";
 import juice from "juice";
-import { Users } from "lib/prisma.js";
 import { dirname } from "lib/paths.js";
 
 class ResendService {
@@ -15,7 +14,7 @@ class ResendService {
 
   async sendEmail(to: string, message: string, html: string) {
     const { data, error } = await this.resend.emails.send({
-      from: "EconomizeAI <noreply@economize-ai.com>",
+      from: "SaveMoney <no-reply@savemoneyy.com>",
       to: [to],
       subject: message,
       html,
@@ -35,33 +34,34 @@ class ResendService {
       const logoDataUrl = `data:${imageMimeType};base64,${imageBase64}`;
 
       const data = {
-        title: "Conta criada com sucesso!",
-        siteName: "Economize AI",
+        title: "¡Cuenta creada con éxito!",
+        siteName: "SaveMoney",
         username: to,
         email: to,
         password: password,
         loginUrl: process.env.PUBLIC_URL
           ? `${process.env.PUBLIC_URL}/auth/login`
-          : "https://economize-ai.com/auth/login",
+          : "https://savemoneyy.com/auth/login",
         logoUrl: logoDataUrl,
-        supportEmail: "suporte@economizeai.com",
+        supportEmail: "soporte@economizeai.com",
         whatsappNumber: "5511963018864",
         year: new Date().getFullYear(),
       };
 
-      // Renderiza o template com CSS inline
+      // Renderiza la plantilla con CSS inline
       const html = await this.renderEmailTemplate("user-created", data);
 
-      // Envia o email
+      // Envía el correo
       const email = await this.sendEmail(
         to,
-        "Sua conta no Economize AI foi criada",
+        "Tu cuenta en SaveMoney ha sido creada",
         html
       );
 
       return email?.id;
     } catch (error: any) {
-      console.log("Erro ao enviar email.... ", error.message);
+      console.log(error)
+      console.log("Error al enviar el correo... ", error.message);
     }
   }
 
@@ -76,7 +76,7 @@ class ResendService {
       async: true,
     });
 
-    // Insere o CSS dentro de <style> antes do </head>
+    // Inserta el CSS dentro de <style> antes de </head>
     const htmlWithCss = htmlWithStyleTag.replace(
       "</head>",
       `<style>${css}</style></head>`
@@ -92,29 +92,31 @@ class ResendService {
     const imageBase64 = fs.readFileSync(imagePath).toString("base64");
     const imageMimeType = "image/png";
 
+    console.log("aaaaaaaaa")
+
     const logoDataUrl = `data:${imageMimeType};base64,${imageBase64}`;
     try {
       const data = {
-        title: "Bem-vindo(a) à plataforma!",
-        siteName: "Economize AI",
+        title: "¡Bienvenido(a) a la plataforma!",
+        siteName: "SaveMoney",
         username: username,
         loginUrl: process.env.PUBLIC_URL
           ? `${process.env.PUBLIC_URL}/auth/login`
-          : "https://economize-ai.com/auth/login",
+          : "https://savemoneyy.com/auth/login",
         logoUrl: logoDataUrl,
-        supportEmail: "suporte@economizeai.com",
+        supportEmail: "savemoneyy.com",
         whatsappNumber: "5511963018864",
         year: new Date().getFullYear(),
       };
       const html = await this.renderEmailTemplate("welcome", data);
       let email = await this.sendEmail(
         useremail,
-        "Bem vindo ao Economize AI",
+        "Bienvenido a SaveMoney",
         html
       );
       return email?.id;
     } catch (error: any) {
-      console.log("Erro ao enviar email....  ", error.message);
+      console.log("Error al enviar el correo...  ", error.message);
     }
   }
 
@@ -130,36 +132,36 @@ class ResendService {
     const logoDataUrl = `data:${imageMimeType};base64,${imageBase64}`;
 
     try {
-      // Monte a URL de redefinição (ajuste o path conforme seu front)
-      const baseUrl = process.env.PUBLIC_URL || "https://economize-ai.com";
+      // Monta la URL de restablecimiento (ajusta el path según tu front)
+      const baseUrl = process.env.PUBLIC_URL || "https://savemoneyy.com";
       const resetUrl = `${baseUrl}/auth/reset-password?token=${encodeURIComponent(
         resetToken
       )}`;
 
       const data = {
-        title: "Redefinição de Senha",
-        siteName: "Economize AI",
+        title: "Restablecimiento de Contraseña",
+        siteName: "SaveMoney",
         username,
         resetUrl,
         logoUrl: logoDataUrl,
-        supportEmail: "suporte@economizeai.com",
+        supportEmail: "soporte@economizeai.com",
         whatsappNumber: "5511963018864",
         year: new Date().getFullYear(),
-        expiresInMinutes, // caso seu template exiba a validade do link
+        expiresInMinutes, // por si tu plantilla muestra la validez del enlace
       };
 
-      // Template EJS chamado "recover.ejs" (mesma estrutura do welcome)
+      // Plantilla EJS llamada "recover.ejs" (misma estructura que welcome)
       const html = await this.renderEmailTemplate("recover", data);
 
       const email = await this.sendEmail(
         useremail,
-        "Redefinição de senha - Economize AI",
+        "Restablecimiento de contraseña - SaveMoney",
         html
       );
 
       return email?.id;
     } catch (error: any) {
-      console.log("Erro ao enviar email.... ", error.message);
+      console.log("Error al enviar el correo... ", error.message);
     }
   }
 
@@ -171,11 +173,11 @@ class ResendService {
 
     try {
       const data = {
-        title: "Senha redefinida com sucesso",
-        siteName: "Economize AI",
+        title: "Contraseña restablecida con éxito",
+        siteName: "SaveMoney",
         username,
         logoUrl: logoDataUrl,
-        supportEmail: "suporte@economizeai.com",
+        supportEmail: "soporte@economizeai.com",
         whatsappNumber: "5511963018864",
         year: new Date().getFullYear(),
       };
@@ -187,13 +189,13 @@ class ResendService {
 
       const email = await this.sendEmail(
         useremail,
-        "Sua senha foi redefinida - Economize AI",
+        "Tu contraseña ha sido restablecida - SaveMoney",
         html
       );
 
       return email?.id;
     } catch (error: any) {
-      console.log("Erro ao enviar email.... ", error.message);
+      console.log("Error al enviar el correo... ", error.message);
     }
   }
 }

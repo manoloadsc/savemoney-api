@@ -18,6 +18,7 @@ export default fp(async function stripeWebhookPlugin(server: FastifyInstance) {
     stripeScope.post("/stripe/webhook", { schema : { hide : true } } ,
       async (req, res) => {
       const sig = req.headers["stripe-signature"] as string;
+      console.log((req.body as any).raw)
 
       try {
         const event = await stripeService.constructEvent(sig, (req.body as any).raw)

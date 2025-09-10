@@ -47,34 +47,32 @@ class scheduleService {
 
     // ✅ CRON A CADA MINUTO → processa notificações CONFIRM
     cron.schedule('* * * * *', async () => {
-
       const confirms = await notificationService.getGoalsNotificationsToSend()
+      console.log(confirms)
       for (const notification of confirms) {
         // 🔔 Aqui você pode disparar um alerta real ("Você comprou?")
         console.log(`🔔 Notificação ${notification.purpose} para usuário: ${notification.id} ${notification.user.chat_id} ${notification.user.name}`)
         let notificationId
 
-        const user = await userService.getuserByChatId(notification.user.chat_id!) 
-        if(!user) return;
-
         try {
           if (
-            // notification.notificationTimes > 1 && 
             notification.purpose === "CONFIRM") {
             if (notification.value.equals(0)) {
+              console.log("aqui")
               const { messageId } = await whatssapService.noPriceNotification(notification.user.chat_id!, notification.user.name, notification.description)
               notificationId = messageId
             } else {
-              const { messageId } = await whatssapService.sendNotificationTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value!, user.currency!))
+              const { messageId } = await whatssapService.sendNotificationTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value!, notification.user.currency!))
               notificationId = messageId
             }
           }
 
           if (notification.purpose === "INFO") {
-            const { messageId } = await whatssapService.sendTransacionParcelTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value, user.currency!))
+            const { messageId } = await whatssapService.sendTransacionParcelTemplate(notification.user.chat_id!, notification.user.name, notification.description, formatCurrency(notification.value, notification.user.currency!))
           }
-        } catch (error) {
-          console.log(`Erro ao enviar notificação para o usuário: ${notification.id} ${notification.user.chat_id} ${notification.user.name}`);
+        } catch (error : any) {
+          console.log(`Erro ao enviar notificação para o usuário: ${notification.id} ${notification.user.chat_id} ${notification.user.name} ${error}`);
+          console.log(error)
         }
 
         // Atualiza próxima execução

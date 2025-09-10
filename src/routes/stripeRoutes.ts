@@ -19,6 +19,7 @@ export default async function stripeRoutes(app: FastifyInstance) {
         summary : 'O checkout do usuário logado pela plataforma.'
       }
     } ,async (req, res) => {
+      console.log(req.body)
     try {
 
       const email = req.user.email

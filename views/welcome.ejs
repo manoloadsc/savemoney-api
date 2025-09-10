@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
@@ -8,53 +8,48 @@
         <%= title %>
     </title>
     <link rel="stylesheet" href="/public/styles/email.css" />
-  
 </head>
 <!-- DEBUG: <%= logoUrl %> -->
 <body>
     <div class="container">
         <div class="header">
-            <img class="logo" src="https://api.economize-ai.com/static/images/logo.png" alt="<%= siteName %>" />
+            <img class="logo" src="https://api.savemoneyy/static/images/logo-savemoney.png" alt="<%= siteName %>" />
             <h1>
                 <%= title %>
             </h1>
         </div>
         <div class="content">
-            <h2>Olá, <%= username %>!</h2>
+            <h2>¡Hola, <%= username %>!</h2>
             <p style="font-size: 16px">
-                Estamos muito felizes em ter você com a gente. A partir de agora, você poderá registrar seus ganhos e
-                gastos, receber lembretes automáticos e visualizar seus relatórios financeiros de forma simples e
-                inteligente.
+                Estamos muy felices de tenerte con nosotros. A partir de ahora, podrás registrar tus ingresos y gastos, recibir recordatorios automáticos y visualizar tus informes financieros de forma simple e inteligente.
             </p>
             <a target="_blank" href="<%= loginUrl %>" class="button">
-                Acessar a Plataforma
+                Acceder a la Plataforma
             </a>
             <p style="font-size: 16px">
-                Você também pode interagir com nosso assistente via WhatsApp para registrar suas transações com apenas
-                uma mensagem de texto ou áudio.
+                También puedes interactuar con nuestro asistente vía WhatsApp para registrar tus transacciones con solo un mensaje de texto o audio.
                 <br /><br />
-                <b>Obs: Antes de usar, confirme que o número do seu WhatsApp está cadastrado no sistema e seu
-                    e-mail.</b>
+                <b>Nota: Antes de usar, confirma que el número de tu WhatsApp y tu correo electrónico están registrados en el sistema.</b>
             </p>
             <p style="font-size: 16px">
-                Caso precise de ajuda, nosso suporte está disponível por e-mail ou WhatsApp:
+                Si necesitas ayuda, nuestro soporte está disponible por correo electrónico o WhatsApp:
             </p>
             <p style="font-size: 16px">
-                E-mail:
+                Correo electrónico:
                 <a href="mailto:<%= supportEmail %>">
                     <%= supportEmail %>
                 </a>
                 <br />
                 WhatsApp:
                 <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
-                    Clique aqui para falar no WhatsApp
+                    Haz clic aquí para hablar por WhatsApp
                 </a>
             </p>
         </div>
         <div class="footer">
             <p style="font-size: 14px">
                 © <%= year %>
-                    <%= siteName %>. Todos os direitos reservados.
+                    <%= siteName %>. Todos los derechos reservados.
             </p>
         </div>
     </div>

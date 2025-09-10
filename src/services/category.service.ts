@@ -5,7 +5,7 @@ import { categoryListDto } from "validatation/category.validation.js";
 
 class CategoryService {
 
-    static categoryNames = categories.map(c => c.pt);
+    static categoryNames = categories.map(c => c.es);
 
     constructor() { }
 

@@ -30,7 +30,7 @@ async function start() {
   await server.register(swagger, {
     openapi: {
       info: {
-        title: "Economize ai API",
+        title: "SaveMoney",
         version: "1.0.0",
       },
       servers: [

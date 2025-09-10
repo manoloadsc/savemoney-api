@@ -39,6 +39,9 @@ export async function handleStripeWebhook(event: Stripe.Event) {
 
     case "invoice.payment_succeeded": {
       const invoice = data as Stripe.Invoice;
+
+      console.log(invoice)
+
       const customerId =
         typeof invoice.customer === "string"
           ? invoice.customer

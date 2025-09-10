@@ -2,9 +2,15 @@ import { addDays, endOfMinute, startOfMinute, startOfMonth } from "date-fns";
 import prisma, { Interval, NotificationResponseStatus, Prisma, RemindPeriod, Transaction } from "lib/prisma.js";
 import transactionsService from "./transactions.service.js";
 import scheduleService from "./schedule.service.js";
-import { CreateNotificationDTO, GetNotificationsDTO, updatedNotificationGptDTO, updatedNotificationValidation } from "validatation/notification.validation.js";
+import {
+  CreateNotificationDTO,
+  GetNotificationsDTO,
+  updatedNotificationGptDTO,
+  updatedNotificationValidation,
+} from "validatation/notification.validation.js";
 import { badRequestError, notFoundError } from "errors/defaultErrors.js";
 import { userDateTime } from "lib/date.js";
+import { Decimal } from "@prisma/client/runtime/library";
 class NotificationService {
     constructor() { }
 
@@ -65,8 +71,10 @@ class NotificationService {
         userId: string
     ) {
 
-        let interval = createNotificationDTO.period as RemindPeriod;
+        console.log(`${Number(createNotificationDTO.value)} ${Number(createNotificationDTO.value) === 0}`)
 
+        let interval = createNotificationDTO.period as RemindPeriod;
+        console.log(createNotificationDTO.referenceDate, 'DATA SALVA NO BANCO')
         const notification = await prisma.notifications.create({
             data: {
                 description: createNotificationDTO.description,
@@ -78,7 +86,7 @@ class NotificationService {
                 isFutureGoal: false,
                 purpose: 'CONFIRM',
                 type : createNotificationDTO.type,
-                value: createNotificationDTO.value,
+                value: Number(createNotificationDTO.value) <= 0 ? 0 : createNotificationDTO.value,
                 userId: userId
             }
         });
