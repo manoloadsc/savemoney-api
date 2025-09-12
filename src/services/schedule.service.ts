@@ -48,7 +48,6 @@ class scheduleService {
     // ✅ CRON A CADA MINUTO → processa notificações CONFIRM
     cron.schedule('* * * * *', async () => {
       const confirms = await notificationService.getGoalsNotificationsToSend()
-      console.log(confirms)
       for (const notification of confirms) {
         // 🔔 Aqui você pode disparar um alerta real ("Você comprou?")
         console.log(`🔔 Notificação ${notification.purpose} para usuário: ${notification.id} ${notification.user.chat_id} ${notification.user.name}`)

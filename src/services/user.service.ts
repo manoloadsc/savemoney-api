@@ -270,6 +270,7 @@ export class UserService {
       return e
     }
   }
+  
   async getUsersToNotify(daysAg: number) {
 
     const today = new Date()

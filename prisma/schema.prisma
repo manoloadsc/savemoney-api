@@ -62,7 +62,7 @@ model authCode {
 
   used Boolean @default(false)
 
-  user Users @relation(fields: [userId], references: [id])
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Subscription {
@@ -76,7 +76,7 @@ model Subscription {
   canceledAt         DateTime? // se foi cancelado
   createdAt          DateTime  @default(now())
 
-  user     Users     @relation(fields: [userId], references: [id])
+  user     Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
   payments Payment[] // <- novo: relação com pagamentos
 }
 
@@ -104,8 +104,8 @@ model Payment {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user         Users         @relation(fields: [userId], references: [id])
-  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+  user         Users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -119,7 +119,7 @@ model Category {
 model Messages {
   id        Int         @id @default(autoincrement())
   clientId  String
-  user      Users       @relation(fields: [clientId], references: [id])
+  user      Users       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   content   String
   createdAt DateTime    @default(now())
   from      FromMessage
@@ -149,11 +149,11 @@ model Transaction {
 
   categoryId Int
 
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   parcels       Parcels[]
   notifications Notifications?
-  user          Users          @relation(fields: [userId], references: [id])
+  user          Users          @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Notifications {
@@ -179,9 +179,9 @@ model Notifications {
 
   transactionId Int? @unique
 
-  category    Category     @relation(fields: [categoryId], references: [id])
-  transaction Transaction? @relation(fields: [transactionId], references: [id])
-  user        Users        @relation(fields: [userId], references: [id])
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  transaction Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  user        Users        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   messages NotificationMessage[]
 }
@@ -200,8 +200,8 @@ model NotificationMessage {
 
   userId String
 
-  notification Notifications @relation(fields: [notificationId], references: [id])
-  user         Users         @relation(fields: [userId], references: [id])
+  notification Notifications @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user         Users         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([notificationId, month])
 }
@@ -220,8 +220,8 @@ model Parcels {
   updatedAt DateTime?
   createdAt DateTime  @default(now())
 
-  transaction Transaction? @relation(fields: [transactionId], references: [id])
-  user        Users        @relation(fields: [userId], references: [id])
+  transaction Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  user        Users        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Language {
