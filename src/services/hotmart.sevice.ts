@@ -1,5 +1,5 @@
 // services/hotmart.service.ts
-import prisma, { Prisma } from "../lib/prisma.js";
+import prisma, { Prisma, Users } from "../lib/prisma.js";
 import userService from "./user.service.js";
 import resendService from "./resend.service.js";
 import { plans } from "types/plans.js";
@@ -19,7 +19,6 @@ class HotmartService {
 
   async purchasedApproved(data: PurchaseData) {
     const txCode = data.purchase.transaction;
-    console.log(txCode);
     const offerId = data.purchase.offer?.code;
     const buyerEmail = data.buyer.email;
 
@@ -37,7 +36,7 @@ class HotmartService {
           name: data.buyer.name ?? buyerEmail,
           phone,
         });
-        user = created.user;
+        user = created.user as Users;
 
         await resendService.defaultUserCreated(
           user?.email!,
@@ -103,7 +102,7 @@ class HotmartService {
   }
 
   async purchasedCanceled(data: PurchaseData) {
-    const txCode = "HP1525022557";
+    const txCode = data.purchase.transaction;
     if (!txCode) return { ok: true };
 
     return await prisma.$transaction(async (db) => {

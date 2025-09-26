@@ -101,6 +101,7 @@ export interface HotmartPurchaseWebhook {
   data: PurchaseData;
   hottok: string;
 }
+
 export default async function hotmartRoutes(app: FastifyInstance) {
   app.post<{ Body: HotmartPurchaseWebhook }>("/webhook", async (req, reply) => {
     const { data, event, hottok } = req.body;
