@@ -4,8 +4,6 @@ import { comparePassword, hashParssword } from "../utils/hashPassword.js";
 import { generateCode, generateRandomPassowrd } from "utils/generateRandomPassword.js";
 import bcrypt from 'bcrypt'
 import { badRequestError, conflictError, notFoundError, tooManyRequestsError } from "errors/defaultErrors.js";
-import whatssapService from "./whatssap.service.js";
-import Stripe from "stripe";
 import stripeService from "./stripeService.js";
 import { startOfDay, subDays } from "date-fns";
 
@@ -212,21 +210,6 @@ export class UserService {
         password: passwordHash
       }
     })
-  }
-
-  async updateUserPlan(subscription: Stripe.Subscription, Invoice: Stripe.Invoice, userId: string) {
-    let user = await prismaClient.users.update({
-      where: {
-        id: userId
-      },
-      data: {
-        stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer.toString(),
-        active: true
-      }
-    })
-
-    return user
   }
 
   async updateLastUsedAt(userId: string) {
