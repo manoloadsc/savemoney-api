@@ -30,7 +30,7 @@ class HotmartService {
     return await prisma.$transaction(async (db) => {
       let user = await userService.findByEmail(buyerEmail, false);
       if (!user) {
-        const phone = `+55${data.buyer.checkout_phone}`;
+        const phone = data.buyer.checkout_phone;
         const created = await userService.createDefaultUser({
           email: buyerEmail,
           name: data.buyer.name ?? buyerEmail,
