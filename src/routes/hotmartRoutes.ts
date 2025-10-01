@@ -104,15 +104,7 @@ export interface HotmartPurchaseWebhook {
 
 export default async function hotmartRoutes(app: FastifyInstance) {
   app.post<{ Body: HotmartPurchaseWebhook }>("/webhook", async (req, reply) => {
-    const { data, event, hottok } = req.body;
-
-    // 1) valida token do webhook
-    if (hotmartSevice.validateHottok(hottok)) {
-      // retorna 200 para não ficar reentregando, mas não processa
-      return reply.code(200).send("IGNORED");
-    }
-
-    // 2) roteia eventos
+    const { data, event } = req.body;
     switch (event) {
       case "PURCHASE_APPROVED":
         await hotmartSevice.purchasedApproved(data);
