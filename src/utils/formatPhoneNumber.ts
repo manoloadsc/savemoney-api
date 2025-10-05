@@ -2,7 +2,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js"
 
 export function formatPhoneNumber(from: string): string {
   // Remove o código do país (55) se vier com ele
-  if (from.startsWith("55") && from.length === 12) {
+  if (from.length === 12) {
     // Ex: 557488595408 → DDD: 74, Número: 88595408
     const ddd = from.slice(2, 4);
     const num = from.slice(4);

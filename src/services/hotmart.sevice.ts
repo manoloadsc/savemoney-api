@@ -42,6 +42,8 @@ class HotmartService {
           user?.email!,
           created.randomPassowrd
         );
+
+        await resendService.welcomeEmail(user.name, user.email);
       }
 
       // 2) idempotência: já existe plano com essa transação?

@@ -143,6 +143,7 @@ class ResendService {
       const data = {
         title: "Restablecimiento de Contraseña",
         siteName: "SaveMoney",
+        resetUrl,
         username,
         logoUrl: logoDataUrl,
         supportEmail: "soporte@economizeai.com",
