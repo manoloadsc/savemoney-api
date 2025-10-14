@@ -27,7 +27,7 @@ class ResendService {
 
   async defaultUserCreated(to: string, password: string) {
     try {
-      const imagePath = path.join(dirname, "public", "images", "logo-azul.png");
+      const imagePath = path.join(dirname, "public", "images", "logo-savemoney.png");
       const imageBase64 = fs.readFileSync(imagePath).toString("base64");
       const imageMimeType = "image/png";
 
@@ -138,11 +138,13 @@ class ResendService {
         resetToken
       )}`;
 
+      console.log(baseUrl, resetToken)
+
       const data = {
         title: "Restablecimiento de Contraseña",
         siteName: "SaveMoney",
-        username,
         resetUrl,
+        username,
         logoUrl: logoDataUrl,
         supportEmail: "soporte@economizeai.com",
         whatsappNumber: "5511963018864",
@@ -161,6 +163,7 @@ class ResendService {
 
       return email?.id;
     } catch (error: any) {
+      console.log("aqui")
       console.log("Error al enviar el correo... ", error.message);
     }
   }

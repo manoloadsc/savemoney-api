@@ -7,8 +7,8 @@ import stripeRoutes from "./routes/stripeRoutes.js";
 import webhookPlugin from "./plugins/webhook-plugin.js";
 import whatssapRoutes from "./routes/whatssapRoutes.js";
 import scheduleService from "./services/schedule.service.js";
-import swagger from '@fastify/swagger';
-import swaggerUI from '@fastify/swagger-ui';
+import swagger from "@fastify/swagger";
+import swaggerUI from "@fastify/swagger-ui";
 import privateUserRoutes from "./routes/privateUserRoutes.js";
 import categoryService from "services/category.service.js";
 import dashboardRoutes from "routes/dashboardRoutes.js";
@@ -19,6 +19,8 @@ import categoryRoutes from "routes/categoryRoutes.js";
 import toolsRoutes from "routes/devToolsRoutes.js";
 import { setupStatic } from "plugins/static.js";
 import { setupTemplate } from "plugins/template.js";
+import hotmartRoutes from "routes/hotmartRoutes.js";
+import hotmartSevice from "services/hotmart.sevice.js";
 
 async function start() {
   const server = Fastify();
@@ -35,7 +37,7 @@ async function start() {
       },
       servers: [
         { url: "/api", description: "Base publica via nginx" },
-        { url : "/", description : "Base local" },
+        { url: "/", description: "Base local" },
       ],
       components: {
         securitySchemes: {
@@ -70,14 +72,15 @@ async function start() {
     }
   });
 
-  await setupCors(server)
-  await setupStatic(server)
-  await setupTemplate(server)
+  await setupCors(server);
+  await setupStatic(server);
+  await setupTemplate(server);
 
   server.register(webhookPlugin);
   server.register(publicUserRoutes);
-  server.register(categoryRoutes, { prefix: '/category' })
-  server.register(transactionRoutes, { prefix: "/transaction", });
+  server.register(hotmartRoutes, { prefix: "/hotmart" });
+  server.register(categoryRoutes, { prefix: "/category" });
+  server.register(transactionRoutes, { prefix: "/transaction" });
   server.register(notificationRoutes, { prefix: "/notification" });
   server.register(dashboardRoutes, { prefix: "/dashboard" });
   server.register(privateUserRoutes, { prefix: "/user" });
@@ -85,7 +88,7 @@ async function start() {
   server.register(stripeRoutes, { prefix: "/stripe" });
   server.register(whatssapRoutes, { prefix: "/wa" });
   if (process.env.ENVIRONMENT !== "PROD") {
-    server.register(toolsRoutes, { prefix: "/tools" })
+    server.register(toolsRoutes, { prefix: "/tools" });
   }
 
   server.get("/", (req, res) => {
@@ -105,6 +108,7 @@ async function start() {
     });
     scheduleService.start();
     categoryService.createDefaultCategories();
+    hotmartSevice.createDefaultPlan();
   } catch (err) {
     console.error(err);
     process.exit(1);
