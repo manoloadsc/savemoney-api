@@ -1,1 +1,0 @@
-export const toText = (v: unknown) => ({ type: "text", text: v == null ? "" : String(v).slice(0, 1024) });
