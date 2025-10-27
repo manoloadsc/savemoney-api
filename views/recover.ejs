@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="/public/styles/email.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <img class="logo" src="https://api.savemoneyy/static/images/logo-savemoney.png" alt="<%= siteName %>" />
+      <h1>
+        <%= title %>
+      </h1>
+    </div>
+
+    <div class="content">
+      <h2>¡Hola, <%= username %>!</h2>
+      <p style="font-size: 16px">
+        Hemos recibido una solicitud para restablecer tu contraseña de acceso a la plataforma <b><%= siteName %></b>.
+      </p>
+      <p style="font-size: 16px">
+        Para continuar, haz clic en el botón de abajo y sigue las instrucciones:
+      </p>
+
+      <a target="_blank" href="<%= resetUrl %>" class="button">
+        Restablecer Contraseña
+      </a>
+
+      <p style="font-size: 16px">
+        Si no solicitaste este cambio, ignora este correo electrónico. Tu cuenta permanecerá segura.
+      </p>
+      <p style="font-size: 16px">
+        Si necesitas ayuda, nuestro soporte está disponible por correo electrónico o WhatsApp:
+      </p>
+      <p style="font-size: 16px">
+        Correo electrónico:
+        <a href="mailto:<%= supportEmail %>">
+          <%= supportEmail %>
+        </a>
+        <br />
+        WhatsApp:
+        <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
+          Haz clic aquí para hablar por WhatsApp
+        </a>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p style="font-size: 14px">
+        © <%= year %> <%= siteName %>. Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

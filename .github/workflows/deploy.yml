@@ -1,0 +1,45 @@
+name: Deploy API via SSH
+
+on:
+  push:
+    branches:
+      - main  # ou dev, dependendo do ambiente
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH na VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/project/economize-ai-api
+
+            echo "-> Atualizando código"
+            git reset --hard
+            git fetch --all
+
+            if [ "${GITHUB_REF##*/}" = "main" ]; then
+              git switch main
+              git pull origin main
+
+              echo "-> Reiniciando container de produção"
+              docker compose -f docker-compose.prod.yml down
+              docker compose -f docker-compose.prod.yml up -d --build
+            elif [ "${GITHUB_REF##*/}" = "dev" ]; then
+              git switch dev
+              git pull origin dev
+
+              echo "-> Reiniciando container de desenvolvimento"
+              docker compose -f docker-compose.dev.yml down
+              docker compose -f docker-compose.dev.yml up -d --build
+            fi

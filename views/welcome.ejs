@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/public/styles/email.css" />
+</head>
+<!-- DEBUG: <%= logoUrl %> -->
+<body>
+    <div class="container">
+        <div class="header">
+            <img class="logo" src="https://api.savemoneyy/static/images/logo-savemoney.png" alt="<%= siteName %>" />
+            <h1>
+                <%= title %>
+            </h1>
+        </div>
+        <div class="content">
+            <h2>¡Hola, <%= username %>!</h2>
+            <p style="font-size: 16px">
+                Estamos muy felices de tenerte con nosotros. A partir de ahora, podrás registrar tus ingresos y gastos, recibir recordatorios automáticos y visualizar tus informes financieros de forma simple e inteligente.
+            </p>
+            <a target="_blank" href="<%= loginUrl %>" class="button">
+                Acceder a la Plataforma
+            </a>
+            <p style="font-size: 16px">
+                También puedes interactuar con nuestro asistente vía WhatsApp para registrar tus transacciones con solo un mensaje de texto o audio.
+                <br /><br />
+                <b>Nota: Antes de usar, confirma que el número de tu WhatsApp y tu correo electrónico están registrados en el sistema.</b>
+            </p>
+            <p style="font-size: 16px">
+                Si necesitas ayuda, nuestro soporte está disponible por correo electrónico o WhatsApp:
+            </p>
+            <p style="font-size: 16px">
+                Correo electrónico:
+                <a href="mailto:<%= supportEmail %>">
+                    <%= supportEmail %>
+                </a>
+                <br />
+                WhatsApp:
+                <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= whatsappNumber %>">
+                    Haz clic aquí para hablar por WhatsApp
+                </a>
+            </p>
+        </div>
+        <div class="footer">
+            <p style="font-size: 14px">
+                © <%= year %>
+                    <%= siteName %>. Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
