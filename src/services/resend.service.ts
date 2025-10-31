@@ -28,7 +28,7 @@ class ResendService {
 
   async defaultUserCreated(to: string, password: string) {
     try {
-      const imagePath = path.join(dirname, "public", "images", "logo-azul.png");
+      const imagePath = path.join(dirname, "public", "images", "logo-savemoney.png");
       const imageBase64 = fs.readFileSync(imagePath).toString("base64");
       const imageMimeType = "image/png";
 
@@ -45,7 +45,7 @@ class ResendService {
           : "https://savemoneyy.com/auth/login",
         logoUrl: logoDataUrl,
         supportEmail: "soporte@savemoney.com",
-        whatsappNumber: "5511933001993",
+        whatsappNumber: "",
         year: new Date().getFullYear(),
       };
 
@@ -103,7 +103,7 @@ class ResendService {
           : "https://savemoneyy.com/auth/login",
         logoUrl: logoDataUrl,
         supportEmail: "soporte@savemoney.com",
-        whatsappNumber: "554497146721",
+        whatsappNumber: "",
         year: new Date().getFullYear(),
       };
       const html = await this.renderEmailTemplate("welcome", data);
@@ -176,7 +176,7 @@ class ResendService {
         username,
         logoUrl: logoDataUrl,
         supportEmail: "soporte@savemoney.com",
-        whatsappNumber: "554497146721",
+        whatsappNumber: "",
         year: new Date().getFullYear(),
       };
 

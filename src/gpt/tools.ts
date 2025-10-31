@@ -460,7 +460,7 @@ const escalateToHumanTool: ChatCompletionTool = {
   function: {
     name: "escalate_to_human_support",
     description:
-      "Aciona o suporte humano para questões mais aprofundadas ou complexas. Use esta função quando o usuário pedir ajuda mais especializada, solicitar conversar com alguém, ou demonstrar insatisfação com respostas automáticas. Deve responder com uma mensagem indicando que um atendente está disponível via WhatsApp pelo número (11) 91234-5678.",
+      "Aciona o suporte humano para questões mais aprofundadas ou complexas. Use esta função quando o usuário pedir ajuda mais especializada, solicitar conversar com alguém, ou demonstrar insatisfação com respostas automáticas. Deve responder com uma mensagem indicando que um atendente está disponível via WhatsApp.",
     parameters: {
       type: "object",
       properties: {},
