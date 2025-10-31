@@ -6,6 +6,12 @@ export const plans = [
     durationDays: 30,
   },
   {
+    id: "1159207",
+    name: "Plano Mensal - Gratis",
+    description: "",
+    durationDays: 30,
+  },
+  {
     id: "1159206",
     name: "Plano Anual",
     description: "",
