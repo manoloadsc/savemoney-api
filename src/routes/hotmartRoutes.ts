@@ -1,13 +1,14 @@
-import { FastifyInstance } from "fastify"
+import { FastifyInstance } from "fastify";
 import hotmartService from "services/hotmart.service.js";
-import { HotmartPurchaseWebhook } from "types/hotmart.js"
+import { HotmartPurchaseWebhook } from "types/hotmart.js";
 
 export default async function HomartRoutes(app: FastifyInstance) {
-    app.post<{Body: HotmartPurchaseWebhook}>("/webhook", async(req, res) => {
-        const { data, event } = req.body
+  app.post<{ Body: HotmartPurchaseWebhook }>("/webhook", async (req, res) => {
+    const { data, event } = req.body;
 
     switch (event) {
       case "PURCHASE_APPROVED":
+      case "PURCHASE_COMPLETE":
         try {
           await hotmartService.purchasedApproved(data);
         } catch (error) {
@@ -22,7 +23,6 @@ export default async function HomartRoutes(app: FastifyInstance) {
         break;
       default:
         break;
-    }   
-
-    })
+    }
+  });
 }

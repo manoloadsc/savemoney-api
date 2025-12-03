@@ -88,7 +88,7 @@ class ResendService {
   }
 
   async welcomeEmail(username: string, useremail: string) {
-    const imagePath = path.join(dirname, "public", "images", "logo-azul.png");
+    const imagePath = path.join(dirname, "public", "images", "logo-savemoney.png");
     const imageBase64 = fs.readFileSync(imagePath).toString("base64");
     const imageMimeType = "image/png";
 
@@ -124,7 +124,7 @@ class ResendService {
     resetToken: string,
     expiresInMinutes: number = 60
   ) {
-    const imagePath = path.join(dirname, "public", "images", "logo-azul.png");
+    const imagePath = path.join(dirname, "public", "images", "logo-savemoney.png");
     const imageBase64 = fs.readFileSync(imagePath).toString("base64");
     const imageMimeType = "image/png";
     const logoDataUrl = `data:${imageMimeType};base64,${imageBase64}`;
@@ -164,7 +164,7 @@ class ResendService {
   }
 
   async passwordResetSuccessEmail(username: string, useremail: string) {
-    const imagePath = path.join(dirname, "public", "images", "logo-azul.png");
+    const imagePath = path.join(dirname, "public", "images", "logo-savemoney.png");
     const imageBase64 = fs.readFileSync(imagePath).toString("base64");
     const imageMimeType = "image/png";
     const logoDataUrl = `data:${imageMimeType};base64,${imageBase64}`;

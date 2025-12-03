@@ -33,7 +33,7 @@ export const phoneSchema = z.string().transform((val) => {
 export const userValidation = z.object({
   name: z.string(),
   password: z.string()
-    .min(10, { message: "A senha deve ter pelo menos 10 caracteres" })
+    .min(10, { message: "A senha deve ter pelo menos 8 caracteres" })
     .regex(/[a-z]/, "Deve conter pelo menos uma letra minúscula")
     .regex(/[A-Z]/, "Deve conter pelo menos uma letra maiúscula")
     .regex(/\d/, "Deve conter pelo menos um número")
