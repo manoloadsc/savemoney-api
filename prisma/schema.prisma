@@ -37,6 +37,8 @@ model Users {
   numberVerified_at DateTime?
   timeZone          String?
 
+  whopUserId String? @unique
+
   userPlans UserPlan[]
 
   transactions         Transaction[]
@@ -211,7 +213,11 @@ model UserPlan {
   endDate   DateTime? 
   status    Boolean?   @default(true)
 
-  hotmartPurchaseCode     String? @unique
+  // Gateway de pagamento: Hotmart
+  hotmartPurchaseCode String? @unique
+  
+  // Gateway de pagamento: Whop
+  whopMembershipId    String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -221,6 +227,7 @@ model UserPlan {
 
   @@index([userId, status])
   @@index([endDate])
+  @@index([whopMembershipId])
 }
 
 enum Language {

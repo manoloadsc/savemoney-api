@@ -22,6 +22,7 @@ import { setupTemplate } from "plugins/template.js";
 import { format } from "date-fns-tz";
 import hotmartService from "services/hotmart.service.js";
 import HomartRoutes from "routes/hotmartRoutes.js";
+import WhopRoutes from "routes/whopRoutes.js";
 
 async function start() {
   const server = Fastify();
@@ -87,6 +88,7 @@ async function start() {
   server.register(gptRoutes, { prefix: "/gpt" });
   server.register(stripeRoutes, { prefix: "/stripe" });
   server.register(HomartRoutes, { prefix: "/hotmart" });
+  server.register(WhopRoutes, { prefix: "/whop" });
   server.register(whatssapRoutes, { prefix: "/wa" });
   if (process.env.ENVIRONMENT !== "PROD") {
     server.register(toolsRoutes, { prefix: "/tools" });

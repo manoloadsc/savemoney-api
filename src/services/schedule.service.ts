@@ -8,6 +8,7 @@ import { formatCurrency } from "utils/format.js";
 import userService from "./user.service.js";
 import gptService from "./gpt.service.js";
 import hotmartService from "./hotmart.service.js";
+import whopService from "./whop.service.js";
 
 class scheduleService {
   constructor() {}
@@ -34,6 +35,7 @@ class scheduleService {
       try {
         console.log("[cron] plan-expiry START");
         await hotmartService.runPlanExpiryJob();
+        await whopService.runPlanExpiryJob();
         console.log("[cron] plan-expiry DONE");
       } catch (err) {
         console.error("[cron] plan-expiry ERROR", err);
