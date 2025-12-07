@@ -16,21 +16,21 @@ datasource db {
 }
 
 model Users {
-  id       String    @id @default(uuid())
-  chat_id  String?   @unique
-  active   Boolean   @default(false)
-  name     String
-  email    String    @unique
-  password String
-  currency Currency? @default(BRL)
-  lang     Language? @default(pt)
-  completeInformation Boolean @default(false)
+  id                  String    @id @default(uuid())
+  chat_id             String?   @unique
+  active              Boolean   @default(false)
+  name                String
+  email               String    @unique
+  password            String
+  currency            Currency? @default(BRL)
+  lang                Language? @default(pt)
+  completeInformation Boolean   @default(false)
 
   lastUseDate    DateTime  @default(now())
   lastNotifiedAt DateTime?
 
   sendMonthAnalyis DateTime?
-  messages      Messages[]
+  messages         Messages[]
 
   changepassword_at DateTime?
   emailVerified_at  DateTime?
@@ -62,7 +62,6 @@ model authCode {
 
   user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
 
 model PasswordReset {
   id        String   @id @default(uuid())
@@ -193,31 +192,31 @@ model Parcels {
 }
 
 model Plan {
-  id           String   @id
+  id           String  @id
   name         String
   description  String?
   durationDays Int
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  userPlans    UserPlan[]
+  userPlans UserPlan[]
 }
 
 model UserPlan {
-  id        String   @id @default(cuid())
-  userId    String
-  planId    String?
+  id     String  @id @default(cuid())
+  userId String
+  planId String?
 
-  startDate DateTime @default(now())
-  endDate   DateTime? 
-  status    Boolean?   @default(true)
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+  status    Boolean?  @default(true)
 
   // Gateway de pagamento: Hotmart
   hotmartPurchaseCode String? @unique
-  
+
   // Gateway de pagamento: Whop
-  whopMembershipId    String? @unique
+  whopMembershipId String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

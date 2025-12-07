@@ -79,18 +79,18 @@ export type WhopWebhookEvent =
   // Memberships
   | "membership_activated"
   | "membership_deactivated"
-  
+
   // Payments
   | "payment_succeeded"
   | "payment_failed"
   | "payment_pending"
-  
+
   // Invoices
   | "invoice_created"
   | "invoice_paid"
   | "invoice_past_due"
   | "invoice_voided"
-  
+
   // Outros (opcionais)
   | "entry_created"
   | "entry_approved"
@@ -135,3 +135,115 @@ export type WhopWebhookPayload =
   | WhopPaymentSucceededWebhook
   | WhopPaymentFailedWebhook
   | WhopInvoicePaidWebhook;
+
+export interface WhopPaymentSucceededEvent {
+  id: string;
+  api_version: string;
+  timestamp: string;
+  type: "payment.succeeded";
+  data: WhopPaymentData;
+}
+
+export interface WhopPaymentData {
+  id: string; // payment ID (pay_xxx)
+  status: string;
+  substatus: string | null;
+  refundable: boolean;
+  retryable: boolean;
+  voidable: boolean;
+
+  created_at: string;
+  paid_at: string | null;
+  last_payment_attempt: string | null;
+
+  dispute_alerted_at?: string | null;
+  refunded_at?: string | null;
+
+  plan?: {
+    id: string;
+  };
+
+  product: {
+    id: string;
+    title: string;
+    route: string;
+  };
+
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+  };
+
+  membership?: {
+    id: string;
+    status: string;
+  };
+
+  member?: {
+    id: string;
+    phone?: string;
+  };
+
+  payment_method?: {
+    id: string;
+    created_at: string;
+    payment_method_type: string;
+    card?: WhopCardInfo;
+  };
+
+  company: {
+    id: string;
+    title: string;
+    route: string;
+  };
+
+  promo_code?: {
+    id: string;
+    code: string;
+    amount_off: number;
+    base_currency: string;
+    promo_type: string;
+    number_of_intervals: number;
+  };
+
+  currency: string;
+  total: number;
+  subtotal: number;
+  usd_total: number;
+
+  refunded_amount?: number;
+  auto_refunded?: boolean;
+
+  amount_after_fees: number;
+  card_brand?: string;
+  card_last4?: string;
+
+  billing_address?: WhopBillingAddress;
+
+  payment_method_type: string;
+  billing_reason: string;
+
+  failure_message?: string | null;
+
+  metadata?: Record<string, any>;
+}
+
+export interface WhopBillingAddress {
+  name: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+}
+
+export interface WhopCardInfo {
+  brand?: string;
+  last4?: string;
+  exp_month?: number;
+  exp_year?: number;
+  fingerprint?: string;
+}
