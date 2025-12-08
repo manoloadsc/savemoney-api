@@ -1,16 +1,19 @@
 import { FastifyInstance } from "fastify";
 import whopService from "../services/whop.service.js";
-import { WhopWebhookPayload } from "../types/whop.js";
+import { WhopPaymentdEvent, WhopWebhookPayload } from "../types/whop.js";
 import { makeWebhookValidator } from "@whop/api";
 
 export default async function WhopRoutes(app: FastifyInstance) {
-  /**
-   * Endpoint para receber webhooks do Whop
-   * URL: POST /whop/webhook
-   */
-  app.post<{ Body: WhopWebhookPayload }>("/webhook", async (req, res) => {
+  app.post<{ Body: WhopPaymentdEvent }>("/webhook", async (req, res) => {
     try {
-      console.log(req.body);
+      const data = req.body;
+
+      switch (data.type) {
+        case "payment.succeeded":
+          whopService.membershipActivated(data);
+        case "refund_created":
+          whopService.membershipDeactivated(data);
+      }
 
       return res.status(200).send({ ok: true });
     } catch (erro) {
@@ -19,10 +22,6 @@ export default async function WhopRoutes(app: FastifyInstance) {
     }
   });
 
-  /**
-   * Endpoint de teste (opcional - remover em produção)
-   * URL: GET /whop/test
-   */
   app.get("/test", async (req, res) => {
     return res.send({
       message: "Whop integration active",

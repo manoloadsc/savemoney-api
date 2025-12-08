@@ -136,11 +136,11 @@ export type WhopWebhookPayload =
   | WhopPaymentFailedWebhook
   | WhopInvoicePaidWebhook;
 
-export interface WhopPaymentSucceededEvent {
+export interface WhopPaymentdEvent {
   id: string;
   api_version: string;
   timestamp: string;
-  type: "payment.succeeded";
+  type: string;
   data: WhopPaymentData;
 }
 

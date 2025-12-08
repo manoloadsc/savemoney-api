@@ -3,7 +3,7 @@ import prismaClient, { FromMessage, Prisma } from "../lib/prisma.js";
 import { comparePassword, hashParssword } from "../utils/hashPassword.js";
 import {
   generateCode,
-  generateRandomPassowrd,
+  generateRandomPassword,
 } from "utils/generateRandomPassword.js";
 import bcrypt from "bcrypt";
 import {
@@ -176,12 +176,17 @@ export class UserService {
       },
     });
 
+    console.log(current)
+
     if (!current) return "";
 
     const planMap: Record<string, string> = {
       "Plano Anual": "anual",
       "Plano Mensal": "mensal",
       "Plano Trimestral": "trimestral",
+      "Plan Anual": "anual",
+      "Plan Trimestral": "trimestral",
+      "Plan Mensual": "mensal"
     };
 
     const plan = planMap[current.plan!.name!]
@@ -228,9 +233,9 @@ export class UserService {
     phone: string;
     email: string;
   }) {
-    let randomPassowrd = generateRandomPassowrd(15);
-    const hashedPassowrd = await bcrypt.hash(randomPassowrd, 10);
-    let user = await this.createUser(name, hashedPassowrd, phone, email, true);
+    let randomPassowrd = generateRandomPassword(8);
+    console.log(randomPassowrd)
+    let user = await this.createUser(name, randomPassowrd, phone, email, false);
     return { user, randomPassowrd };
   }
 
